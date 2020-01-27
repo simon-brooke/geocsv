@@ -47,7 +47,6 @@
 (defn map-did-mount-mapbox
   "Did-mount function loading map tile data from MapBox (proprietary)."
   []
-  (get-current-location)
   (let [view (.setView
                (.map js/L "map" (clj->js {:zoomControl "false"})))]
     ;; NEED TO REPLACE FIXME with your mapID!
@@ -59,12 +58,12 @@
 (defn map-did-mount-osm
   "Did-mount function loading map tile data from Open Street Map."
   []
-  (get-current-location) ;; - [Violation] Only request geolocation information in response to a user gesture.
   (let [view (.setView
                (.map js/L
                      "map"
-                     (clj->js {:zoomControl false}))
-               #js [@(subscribe [:latitude]) @(subscribe [:longitude])]
+                     ;; (clj->js {:zoomControl false})
+                     )
+               #js [56 -4] ;;[@(subscribe [:latitude]) @(subscribe [:longitude])]
                @(subscribe [:zoom]))]
     (.addTo (.tileLayer js/L osm-url
                         (clj->js {:attribution osm-attrib
@@ -76,8 +75,8 @@
                    (js/console.log (str "Moving centre to " c))
                    (dispatch-sync [:set-latitude (.-lat c)])
                    (dispatch-sync [:set-longitude (.-lng c)])
-                   (dispatch [:fetch-locality]))))
-    (refresh-map-pins)
+                   (dispatch [:fetch-data]))))
+;;    (refresh-map-pins)
     view))
 
 (defn map-did-mount
@@ -98,5 +97,6 @@
   "A reagent class for the map object."
   []
   ;; (get-current-location)
+  (js/console.log "Attempting to switch to map: 2")
   (reagent/create-class {:reagent-render map-render
                          :component-did-mount map-did-mount}))

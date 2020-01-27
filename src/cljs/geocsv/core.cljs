@@ -34,6 +34,7 @@
       {:class (when @expanded? :is-active)}
       [:div.navbar-start
        [nav-link "#/" "Home" :home]
+       [nav-link "#/map" "Map" :map]
        [nav-link "#/about" "About" :about]]]]))
 
 (defn about-page []
@@ -47,10 +48,12 @@
 
 (defn map-page []
     "Return the content for the main map page. Map showing current location."
+  (js/console.log "Attempting to switch to map: 1")
   (mv/panel))
 
 (def pages
   {:home #'home-page
+   :map #'map-page
    :about #'about-page})
 
 (defn page []
@@ -66,10 +69,10 @@
   (reitit/router
     [["/" {:name        :home
            :view        #'home-page
-           :controllers [{:start (fn [_] (rf/dispatch [:page/init-home]))}]}]
-     ["/map" {:name        :home
+           :controllers [{:start (fn [_] (rf/dispatch [:init-home]))}]}]
+     ["/map" {:name        :map
            :view        #'map-page
-           :controllers [{:start (fn [_] (rf/dispatch [:page/init-map]))}]}]
+           :controllers [{:start (fn [_] (rf/dispatch [:init-map]))}]}]
      ["/about" {:name :about
                 :view #'about-page}]]))
 
@@ -86,6 +89,7 @@
   (r/render [#'page] (.getElementById js/document "app")))
 
 (defn init! []
+  (rf/dispatch-sync [:initialise-db])
   (start-router!)
   (ajax/load-interceptors!)
   (mount-components))

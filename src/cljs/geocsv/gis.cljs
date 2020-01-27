@@ -1,15 +1,13 @@
 (ns ^{:doc "geocsv app map stuff."
       :author "Simon Brooke"}
   geocsv.gis
-  (:require [cljs.reader :refer [read-string]]
+  (:require [ajax.core :refer [GET]]
+            [ajax.json :refer [json-request-format json-response-format]]
+            [cljs.reader :refer [read-string]]
             [clojure.string :refer [capitalize lower-case]]
             [cemerick.url :refer (url url-encode)]
             [day8.re-frame.http-fx]
-            [re-frame.core :refer [dispatch reg-event-db reg-event-fx subscribe]]
-            [ajax.core :refer [GET]]
-            [ajax.json :refer [json-request-format json-response-format]]
-            [youyesyet.locality :refer [locality]]
-            ))
+            [re-frame.core :refer [dispatch reg-event-db reg-event-fx subscribe]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;

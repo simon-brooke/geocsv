@@ -8,6 +8,7 @@
                  [cljs-ajax "0.8.0"]
                  [cljsjs/leaflet "1.2.0-0"]
                  [clojure.java-time "0.3.2"]
+                 [com.cemerick/url "0.1.1"]
                  [com.cognitect/transit-clj "0.8.319"]
                  [cprop "0.1.15"]
                  [day8.re-frame/http-fx "0.1.6"]
