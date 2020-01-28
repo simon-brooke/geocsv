@@ -1,5 +1,5 @@
-(ns geocsv.routes.json
-  "JSON routes for geocsv."
+(ns geocsv.routes.rest
+  "REST routes for geocsv."
   (:require [adl-support.core :as ac]
             [adl-support.rest-support :as ar]
             [clojure.core.memoize :as memo]
@@ -44,8 +44,9 @@
       (let [grammar-matcher (.getPathMatcher
                             (java.nio.file.FileSystems/getDefault)
                             "glob:*-pin.png")]
-      (->> "resources/public/img/map-pins"
-           clojure.java.io/file
+      (->> "public/img/map-pins"
+           io/resource
+           io/file
            file-seq
            (filter #(.isFile %))
            (filter #(.matches grammar-matcher (.getFileName (.toPath %)))))))
@@ -69,15 +70,20 @@
 
 (defn get-data-file
   "Return JSON formatted data taken from the CSV file with the name `filename`
-  in the directory `resources/public/data`. TODO: There is a safe way to
-  access the content of the resource directory but I don't recall it just now."
+  in the directory `resources/public/data`."
   [filename]
-  (csv->json (io/reader (io/file (str "resources/public/data/" filename)))))
+  (-> (str "public/data/" filename) io/resource io/file io/reader csv->json))
 
 (defn get-data
+  "Return JSON formatted data from the source implied by this `request`."
   [request]
   (ar/do-or-server-fail
-    (let [params (ac/massage-params request)]
+    ;; We're merging the parameters from the request with the key/value
+    ;; pairs already in the session, so that parame put into the session
+    ;; by calls to the home page can be used here.
+    (let [params (merge
+                   (:session request)
+                   (ac/massage-params request))]
     (cond
       (:docid params) (get-data-google (:docid params))
       (:uri params) (get-data-uri (:uri params))
@@ -85,7 +91,8 @@
       :else (get-data-file "data.csv")))
     200))
 
-(defroutes json-routes
+(defroutes rest-routes
   (GET "/get-pin-image-names" request (get-pin-image-names request))
   (POST "/get-pin-image-names" request (get-pin-image-names request))
-  (GET "/get-data" request (get-data request)))
+  (GET "/get-data" request (get-data request))
+  (POST "/get-data" request (get-data request)))
