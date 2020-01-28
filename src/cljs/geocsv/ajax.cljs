@@ -6,9 +6,11 @@
     [re-frame.core :as rf]))
 
 (defn local-uri? [{:keys [uri]}]
-  (not (re-find #"^\w+?://" uri)))
+  (js/console.log (str "local-uri?: received `" (str uri) "` (type " (type uri) ") as uri"))
+  (not (re-find #"^\w+?://" (str uri))))
 
 (defn default-headers [request]
+  (js/console.log (str "default-headers: received `" request "` as request"))
   (if (local-uri? request)
     (-> request
         (update :headers #(merge {"x-csrf-token" js/csrfToken} %)))

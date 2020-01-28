@@ -39,6 +39,7 @@
                  [selmer "1.12.18"]]
 
   :min-lein-version "2.0.0"
+  :npm {:dependencies [[leaflet "1.3.1"]]}
 
   :source-paths ["src/clj" "src/cljs" "src/cljc"]
   :test-paths ["test/clj"]
@@ -46,7 +47,11 @@
   :target-path "target/%s/"
   :main ^:skip-aot geocsv.core
 
-  :plugins [[lein-cljsbuild "1.1.7"]]
+  :plugins [[lein-cljsbuild "1.1.7"]
+            [lein-codox "0.10.7"]
+            [lein-npm "0.6.2"]
+            [lein-release "1.0.5"]]
+
   :clean-targets ^{:protect false}
   [:target-path [:cljsbuild :builds :app :compiler :output-dir] [:cljsbuild :builds :app :compiler :output-to]]
   :figwheel

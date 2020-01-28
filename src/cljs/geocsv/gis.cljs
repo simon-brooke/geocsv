@@ -4,7 +4,7 @@
   (:require [ajax.core :refer [GET]]
             [ajax.json :refer [json-request-format json-response-format]]
             [cljs.reader :refer [read-string]]
-            [clojure.string :refer [capitalize lower-case]]
+            [clojure.string :as s]
             [cemerick.url :refer (url url-encode)]
             [day8.re-frame.http-fx]
             [re-frame.core :refer [dispatch reg-event-db reg-event-fx subscribe]]))
@@ -51,8 +51,7 @@
               (do
                 (dispatch [:set-latitude lat])
                 (dispatch [:set-longitude lng])
-                (.panTo view (.latLng js/L lat lng))
-                (locality lat lng))
+                (.panTo view (.latLng js/L lat lng)))
               (do
                 (js/console.log
                   (if view
@@ -80,29 +79,65 @@
         (s/replace (s/lower-case (str (:category record))) #"[^a-z0-9]" "-")) "-pin")
     "unknown-pin"))
 
+(defn popup-content
+  "Appropriate content for the popup of a map pin for this `record`."
+  [record]
+  (str
+    "<h5>"
+    (:name record)
+    "</h5><dl>"
+    (apply
+      str
+      (map #(str "<dt>" (name %) "</dt><dd>" (record %) "</dd>") (keys record)))
+    "</dl>"))
+
+(defn popup-table-content
+  "Appropriate content for the popup of a map pin for this `record`, as a
+  table. Obviously this is semantically wrong, but for styling reasons it's
+  worth trying."
+  [record]
+  (str
+    "<h5>"
+    (:name record)
+    "</h5><table>"
+    (apply
+      str
+      (map #(str "<tr><th>" (name %) "</th><td>" (record %) "</td></tr>") (keys record)))
+    "</table>"))
+
 (defn add-map-pin
-  "Add an appropriate map-pin for this `record` in this map `view`."
+  "Add an appropriate map-pin for this `record` in this map `view`, if it
+  has a valid `:latitude` and `:longitude`."
   [record index view]
   (let [lat (:latitude record)
-        lng (:longitude record)
-        pin (.icon js/L
-                   (clj->js
-                    {:iconAnchor [16 41]
-                     :iconSize [32 42]
-                     :iconUrl (str "img/map-pins/" (pin-image record) ".png")
-                     :riseOnHover true
-                     :shadowAnchor [16 23]
-                     :shadowSize [57 24]
-                     :shadowUrl "img/map-pins/shadow_pin.png"}))
-        marker (.marker js/L
-                        (.latLng js/L lat lng)
-                        (clj->js {:icon pin
-                                  :title (:name record)}))]
-    (.on
+        lng (:longitude record)]
+    (if
+      (and
+        (number? lat)
+        (number? lng)
+        (not (zero? lat))
+        (not (zero? lng)))
+      (let [pin (.icon js/L
+                       (clj->js
+                         {:iconAnchor [16 41]
+                          :iconSize [32 42]
+                          :iconUrl (str "img/map-pins/" (pin-image record) ".png")
+                          :riseOnHover true
+                          :shadowAnchor [16 23]
+                          :shadowSize [57 24]
+                          :shadowUrl "img/map-pins/shadow_pin.png"}))
+            marker (.marker js/L
+                            (.latLng js/L lat lng)
+                            (clj->js {:icon pin
+                                      :title (:name record)}))]
+        (.bindPopup marker (popup-table-content record))
         (.addTo marker view)
-        "click"
-        (fn [_] (map-pin-click-handler index)))
-    marker))
+;;         (.on
+;;           (.addTo marker view)
+;;           "click"
+;;           (fn [_] (map-pin-click-handler index)))
+        (js/console.log (str "Added `"(:name record)"` in at " lat ", " lng))
+        marker))))
 
 (defn map-remove-pins
   "Remove all pins from this map `view`. Side-effecty; liable to be
@@ -120,13 +155,12 @@
   "Refresh the map pins on the current map. Side-effecty; liable to be
     problematic."
   [db]
-  (let [view (map-remove-pins @(re-frame/subscribe [:view]))
+  (let [view (map-remove-pins @(subscribe [:view]))
         data (:data db)]
     (if
       view
-      (do
-        (js/console.log (str "Adding " (count data) " pins"))
-        (doall (map #(add-map-pin %1 %2 view) data (range))))
+      (let [added (remove nil? (map #(add-map-pin %1 %2 view) data (range)))]
+        (js/console.log (str "Adding " (count added) " pins")))
       (js/console.log "View is not yet ready"))
     db))
 

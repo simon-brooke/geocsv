@@ -163,6 +163,11 @@
     (-> route :data :name)))
 
 (rf/reg-sub
+  :view
+  (fn [db _]
+    (:view db)))
+
+(rf/reg-sub
   :zoom
   (fn [db _]
     (:map-zoom (:map db))))

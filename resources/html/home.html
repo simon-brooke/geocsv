@@ -6,7 +6,7 @@
       <title>Welcome to geocsv</title>
   </head>
   <body>
-    
+
     <div id="app">
       <section class="section">
         <div class="container is-fluid">
@@ -36,6 +36,12 @@
     <script type="text/javascript">
         var csrfToken = "{{csrf-token}}";
     </script>
+<!-- scripts and styles -->
+<!-- ATTENTION \/ -->
+<!-- ATTENTION /\ -->
+<!-- Leaflet -->
+<link rel="stylesheet" href="js/lib/node_modules/leaflet/dist/leaflet.css" />
+    {% script "js/lib/node_modules/leaflet/dist/leaflet.js" %}
     {% script "/js/app.js" %}
   </body>
 </html>
