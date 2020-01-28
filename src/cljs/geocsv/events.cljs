@@ -60,7 +60,7 @@
  :fetch-data
  (fn [{db :db} _]
    (let [uri (assoc source-host
-                  :path "/data/data.json")]
+                  :path "/get-data")]
          (js/console.log
           (str
            "Fetching data: " uri))
