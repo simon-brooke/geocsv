@@ -1,4 +1,4 @@
-(defproject geocsv "0.1.0"
+(defproject geocsv "0.1.1-SNAPSHOT"
 
   :description "A wee tool to show comma-separated value data on a map."
   :url "http://example.com/FIXME"
