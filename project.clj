@@ -1,19 +1,23 @@
 (defproject geocsv "0.1.0-SNAPSHOT"
 
-  :description "FIXME: write description"
+  :description "A wee tool to show comma-separated value data on a map."
   :url "http://example.com/FIXME"
 
-  :dependencies [[ch.qos.logback/logback-classic "1.2.3"]
+  :dependencies [[adl-support "0.1.6"]
+                 [ch.qos.logback/logback-classic "1.2.3"]
                  [cheshire "5.9.0"]
                  [cljs-ajax "0.8.0"]
                  [cljsjs/leaflet "1.2.0-0"]
                  [clojure.java-time "0.3.2"]
                  [com.cemerick/url "0.1.1"]
                  [com.cognitect/transit-clj "0.8.319"]
+                 [compojure "1.6.1"]
                  [cprop "0.1.15"]
+                 [csv2edn "0.1.5"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [expound "0.8.3"]
                  [funcool/struct "1.4.0"]
+                 [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
                  [luminus-jetty "0.1.7"]
                  [luminus-transit "0.1.2"]
                  [luminus/ring-ttl-session "0.3.3"]

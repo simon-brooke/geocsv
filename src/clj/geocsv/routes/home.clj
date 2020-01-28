@@ -1,10 +1,9 @@
 (ns geocsv.routes.home
-  (:require
-   [geocsv.layout :as layout]
-   [clojure.java.io :as io]
-   [geocsv.middleware :as middleware]
-   [ring.util.response]
-   [ring.util.http-response :as response]))
+  (:require [clojure.java.io :as io]
+            [geocsv.layout :as layout]
+            [geocsv.middleware :as middleware]
+            [ring.util.response]
+            [ring.util.http-response :as response]))
 
 (defn home-page [request]
   (layout/render request "home.html"))

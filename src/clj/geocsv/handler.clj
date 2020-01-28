@@ -1,13 +1,14 @@
 (ns geocsv.handler
-  (:require
-    [geocsv.middleware :as middleware]
-    [geocsv.layout :refer [error-page]]
-    [geocsv.routes.home :refer [home-routes]]
-    [reitit.ring :as ring]
-    [ring.middleware.content-type :refer [wrap-content-type]]
-    [ring.middleware.webjars :refer [wrap-webjars]]
-    [geocsv.env :refer [defaults]]
-    [mount.core :as mount]))
+  (:require [compojure.core :refer [routes wrap-routes]]
+            [geocsv.env :refer [defaults]]
+            [geocsv.middleware :as middleware]
+            [geocsv.layout :refer [error-page]]
+            [geocsv.routes.home :refer [home-routes]]
+            [geocsv.routes.json :refer [json-routes]]
+            [reitit.ring :as ring]
+            [ring.middleware.content-type :refer [wrap-content-type]]
+            [ring.middleware.webjars :refer [wrap-webjars]]
+            [mount.core :as mount]))
 
 (mount/defstate init-app
   :start ((or (:init defaults) (fn [])))
@@ -17,7 +18,10 @@
   :start
   (ring/ring-handler
     (ring/router
-      [(home-routes)])
+      [(home-routes)
+       (-> #'json/json-routes
+           (wrap-routes middleware/wrap-csrf)
+           (wrap-routes middleware/wrap-formats))])
     (ring/routes
       (ring/create-resource-handler
         {:path "/"})
