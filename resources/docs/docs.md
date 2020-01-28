@@ -1,88 +1,71 @@
-<h2 class="alert alert-success">Congratulations, your <a class="alert-link" href="http://luminusweb.net">Luminus</a> site is ready!</h2>
+# geocsv
 
-This page will help guide you through the first steps of building your site.
+GeoCSV is a wee tool to show comma-separated value data on a map.
 
-#### Why are you seeing this page?
+The CSV file must have
 
-The `home-routes` handler in the `geocsv.routes.home` namespace
-defines the route that invokes the `home-page` function whenever an HTTP
-request is made to the `/` URI using the `GET` method.
+* column names in the first row;
+* data in all other rows;
+* a column whose name is `name`, which always contains data;
+* a column whose name is `latitude`, whose value is always a number between -90.0 and 90.0;
+* a column whose name is `longitude`, whose value is always a number between -180.0 and 180.90
 
-```
-(defn home-routes []
-  [""
-   {:middleware [middleware/wrap-csrf
-                 middleware/wrap-formats]}
-   ["/" {:get home-page}]
-   ["/docs" {:get (fn [_]
-                    (-> (response/ok (-> "docs/docs.md" io/resource slurp))
-                        (response/header "Content-Type" "text/plain; charset=utf-8")))}]])
-```
+Additionally, the value of the column `category`, if present, will be used to select map pins from the map pins folder, if a suitable pin is present. Thus is the value of `category` is `foo`, a map pin image with the name `Foo-pin.png` will be selected.
 
-The `home-page` function will in turn call the `geocsv.layout/render` function
-to render the HTML content:
+## Not yet working
 
-```
-(defn home-page [_]
-  (layout/render "home.html"))
-```
+GeoCSV is at an early stage of development, and some features are not yet working.
 
-The page contains a link to the compiled ClojureScript found in the `target/cljsbuild/public` folder:
+### Doesn't actually interpret CSV
 
-```
-{% script "/js/app.js" %}
-```
+I haven't yet found an easy way to parse CSV into EDN client side, so I've written a [separate library](https://github.com/simon-brooke/csv2edn) to do it server side. However, that library is not yet integrated. Currently the client side actually interprets JSON.
 
-The rest of this page is rendered by ClojureScript found in the `src/cljs/geocsv/core.cljs` file.
+### Missing map pin images
 
+At the current stage of development, if no appropriate image exists in the `resources/public/img/map-pins` folder, that's your problem. **TODO:** I intend at some point to make missing pin images default to `unknown-pin.png`, which does exist.
 
+### Doesn't scale and centre the map to show the data in the sheet
 
-#### Organizing the routes
+Currently the map is initially centred roughly on the centre of Scotland, and scaled arbitrarily. It should compute an appropriate centre and scale from the data provided, but currently doesn't.
 
-The routes are aggregated and wrapped with middleware in the `geocsv.handler` namespace:
+### There's no way of linking your own data feed
 
-```
-(mount/defstate app
-  :start
-  (middleware/wrap-base
-    (ring/ring-handler
-      (ring/router
-        [(home-routes)])
-      (ring/routes
-        (ring/create-resource-handler
-          {:path "/"})
-        (wrap-content-type
-          (wrap-webjars (constantly nil)))
-        (ring/create-default-handler
-          {:not-found
-           (constantly (error-page {:status 404, :title "404 - Page not found"}))
-           :method-not-allowed
-           (constantly (error-page {:status 405, :title "405 - Not allowed"}))
-           :not-acceptable
-           (constantly (error-page {:status 406, :title "406 - Not acceptable"}))})))))
-```
+Currently, the data is taken from the file `resources/public/data/data.json`. What I intend is that you should have a form which allows you to either
 
-The `app` definition groups all the routes in the application into a single handler.
-A default route group is added to handle the `404`, `405`, and `406` errors.
+1. enter [the `DOCID` of your own (publicly readable) Google Sheets spreadsheet](https://stackoverflow.com/questions/33713084/download-link-for-google-spreadsheets-csv-export-with-multiple-sheets);
+2. enter the URL of a CSV file publicly available on the web;
+3. upload a CSV file to the server.
 
-<a class="btn btn-primary" href="https://metosin.github.io/reitit/basics">learn more about routing »</a>
+### There's no way of shareing the map of your own data with other people
 
-#### Managing your middleware
+Currently, the data that is shared is just the data that's present when the app is compiled. Ideally, there should be a way of generating a URL, which might take the form:
 
-Request middleware functions are located under the `geocsv.middleware` namespace.
+    https://server.name/geocsv/docid/564747867
 
-This namespace is reserved for any custom middleware for the application. Some default middleware is
-already defined here. The middleware is assembled in the `wrap-base` function.
+To show data from the first sheet of the Google Sheets spreadsheet whose `DOCID` is 564747867; or
 
-Middleware used for development is placed in the `geocsv.dev-middleware` namespace found in
-the `env/dev/clj/` source path.
+    https://server.name/geocsv?uri=https://address.of.another.server/path/to/csv-file.csv
 
-<a class="btn btn-primary" href="http://www.luminusweb.net/docs/middleware.md">learn more about middleware »</a>
+to show the content of a publicly available CSV file.
 
+## Prerequisites
 
+You will need [Leiningen][1] 2.0 or above installed.
 
+[1]: https://github.com/technomancy/leiningen
 
-#### Need some help?
+## Running
 
-Visit the [official documentation](http://www.luminusweb.net/docs) for examples
-on how to accomplish common tasks with Luminus. The `#luminus` channel on the [Clojurians Slack](http://clojurians.net/) and [Google Group](https://groups.google.com/forum/#!forum/luminusweb) are both great places to seek help and discuss projects with other users.
+To start a web server for the application, run:
+
+    lein npm install
+    lein run
+
+## License
+
+Copyright © 2020 Simon Brooke
+
+Licensed under the GNU General Public License, version 2.0 or (at your option) any later version.
+
+**NOTE THAT** files which are directly created by the Luminus template do not currently have a GPL header
+at the top; files which are new in this project or which have been substantially modified for this project should have a GPL header at the top.

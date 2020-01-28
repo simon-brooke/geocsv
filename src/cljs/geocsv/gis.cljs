@@ -72,12 +72,14 @@
 (defn pin-image
   "Return the name of a suitable pin image for this `record`."
   [record]
-  (if
-    (:category record)
-    (str
-      (s/capitalize
-        (s/replace (s/lower-case (str (:category record))) #"[^a-z0-9]" "-")) "-pin")
-    "unknown-pin"))
+  (let [available @(subscribe [:available-pin-images])]
+    (js/console.log (str "pin-image: available is of type `" (type available) "`; `(fn? available)` returns " (set? available)))
+    (if
+      (contains? available (:category record))
+      (str
+        (s/capitalize
+          (s/replace (s/lower-case (str (:category record))) #"[^a-z0-9]" "-")) "-pin")
+      "unknown-pin")))
 
 (defn popup-content
   "Appropriate content for the popup of a map pin for this `record`."
@@ -102,7 +104,9 @@
     "</h5><table>"
     (apply
       str
-      (map #(str "<tr><th>" (name %) "</th><td>" (record %) "</td></tr>") (keys record)))
+      (map
+        #(str "<tr><th>" (name %) "</th><td>" (record %) "</td></tr>")
+        (sort (keys record))))
     "</table>"))
 
 (defn add-map-pin
@@ -132,10 +136,6 @@
                                       :title (:name record)}))]
         (.bindPopup marker (popup-table-content record))
         (.addTo marker view)
-;;         (.on
-;;           (.addTo marker view)
-;;           "click"
-;;           (fn [_] (map-pin-click-handler index)))
         (js/console.log (str "Added `"(:name record)"` in at " lat ", " lng))
         marker))))
 

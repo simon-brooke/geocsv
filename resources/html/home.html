@@ -28,20 +28,35 @@
       </section>
     </div>
 
+    {% block foot %}
+    <!-- foot: override this block if you don't want the standard footer -->
+    <footer>
+      <div id="credits">
+        <div>
+          <img height="16" width="16" alt="Luminus" src="{{servlet-context}}/img/credits/luminus-logo.png"/>Built with <a href="http://www.luminusweb.net/">LuminusWeb</a> ||
+          <img height="16" width="16" alt="Clojure" src="{{servlet-context}}/img/credits/clojure-icon.gif"/> Powered by <a href="http://clojure.org">Clojure</a> ||
+          <img height="16" width="16" alt="GitHub" src="{{servlet-context}}/img/credits/github-logo-transparent.png"/>Find me/fork me on <a href="https://github.com/simon-brooke/geocsv">Github</a> ||
+          <img height="16" width="16" alt="Free Software Foundation" src="{{servlet-context}}/img/credits/gnu.small.png"/>Licensed under the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU General Public License version 2.0</a>
+        </div>
+      </div>
+    </footer>
+    {% endblock %}
+
     <!-- scripts and styles -->
     {% style "/assets/bulma/css/bulma.min.css" %}
     {% style "/assets/material-icons/css/material-icons.min.css" %}
     {% style "/css/screen.css" %}
+    {% style "/css/geocsv.css" %}
 
     <script type="text/javascript">
         var csrfToken = "{{csrf-token}}";
     </script>
-<!-- scripts and styles -->
-<!-- ATTENTION \/ -->
-<!-- ATTENTION /\ -->
-<!-- Leaflet -->
-<link rel="stylesheet" href="js/lib/node_modules/leaflet/dist/leaflet.css" />
-    {% script "js/lib/node_modules/leaflet/dist/leaflet.js" %}
+    <!-- scripts and styles -->
+    <!-- ATTENTION \/ -->
+    <!-- ATTENTION /\ -->
+    <!-- Leaflet -->
+    {% style "js/lib/node_modules/leaflet/dist/leaflet.css" %}
+    {% script "/js/lib/node_modules/leaflet/dist/leaflet.js" %}
     {% script "/js/app.js" %}
   </body>
 </html>
