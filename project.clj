@@ -1,7 +1,9 @@
 (defproject geocsv "0.1.2-SNAPSHOT"
 
   :description "A wee tool to show comma-separated value data on a map."
-  :url "http://example.com/FIXME"
+  :url "https://github.com/simon-brooke/geocsv"
+  :license {:name "GPL-2.0-or-later WITH Classpath-exception-2.0"
+            :url "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"}
 
   :dependencies [[adl-support "0.1.6"]
                  [ch.qos.logback/logback-classic "1.2.3"]
