@@ -90,6 +90,7 @@
 
 (defn init! []
   (rf/dispatch-sync [:initialise-db])
+  (rf/dispatch [:fetch-pin-image-names])
   (start-router!)
   (ajax/load-interceptors!)
   (mount-components))

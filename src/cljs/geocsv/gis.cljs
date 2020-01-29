@@ -71,48 +71,56 @@
 
 (defn pin-image
   "Return the name of a suitable pin image for this `record`."
-  [record]
-  (let [available @(subscribe [:available-pin-images])]
-    (js/console.log (str "pin-image: available is of type `" (type available) "`; `(fn? available)` returns " (set? available)))
+  [db record]
+  (let [available (:available-pin-images db)
+        category (s/capitalize
+                   (s/replace
+                     (s/lower-case
+                       (str (:category record)))
+                     #"[^a-z0-9]" "-"))]
     (if
-      (contains? available (:category record))
-      (str
-        (s/capitalize
-          (s/replace (s/lower-case (str (:category record))) #"[^a-z0-9]" "-")) "-pin")
+      (available category)
+      (str category "-pin")
       "unknown-pin")))
 
 (defn popup-content
   "Appropriate content for the popup of a map pin for this `record`."
   [record]
-  (str
-    "<h5>"
-    (:name record)
-    "</h5><dl>"
-    (apply
-      str
-      (map #(str "<dt>" (name %) "</dt><dd>" (record %) "</dd>") (keys record)))
-    "</dl>"))
+  (if
+    (map? record) ;; which it should be!
+    (str
+      "<h5>"
+      (:name record)
+      "</h5><dl>"
+      (apply
+        str
+        (map
+          #(str "<dt>" (name %) "</dt><dd>" (record %) "</dd>")
+          (filter #(record %) (keys record))))
+      "</dl>")))
 
 (defn popup-table-content
   "Appropriate content for the popup of a map pin for this `record`, as a
   table. Obviously this is semantically wrong, but for styling reasons it's
   worth trying."
   [record]
-  (str
-    "<h5>"
-    (:name record)
-    "</h5><table>"
-    (apply
-      str
-      (map
-        #(str "<tr><th>" (name %) "</th><td>" (record %) "</td></tr>")
-        (sort (keys record))))
-    "</table>"))
+  (if
+    (map? record) ;; which it should be!
+    (str
+      "<h5>"
+      (:name record)
+      "</h5><table>"
+      (apply
+        str
+        (map
+          #(str "<tr><th>" (name %) "</th><td>" (record %) "</td></tr>")
+          (sort (filter #(record %) (keys record)))))
+      "</table>")))
 
 (defn add-map-pin
   "Add an appropriate map-pin for this `record` in this map `view`, if it
   has a valid `:latitude` and `:longitude`."
-  [record index view]
+  [db record index view]
   (let [lat (:latitude record)
         lng (:longitude record)]
     (if
@@ -125,7 +133,7 @@
                        (clj->js
                          {:iconAnchor [16 41]
                           :iconSize [32 42]
-                          :iconUrl (str "img/map-pins/" (pin-image record) ".png")
+                          :iconUrl (str "img/map-pins/" (pin-image db record) ".png")
                           :riseOnHover true
                           :shadowAnchor [16 23]
                           :shadowSize [57 24]
@@ -159,8 +167,8 @@
         data (:data db)]
     (if
       view
-      (let [added (remove nil? (map #(add-map-pin %1 %2 view) data (range)))]
-        (js/console.log (str "Adding " (count added) " pins")))
-      (js/console.log "View is not yet ready"))
-    db))
+      (let [added (remove nil? (map #(add-map-pin db %1 %2 view) data (range)))]
+        (js/console.log (str "Adding " (count added) " pins"))
+        db)
+      (do (js/console.log "View is not yet ready") db))))
 

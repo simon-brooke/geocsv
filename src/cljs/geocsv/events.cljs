@@ -74,6 +74,24 @@
           :db  db})))
 
 (rf/reg-event-fx
+ :fetch-pin-image-names
+ (fn [{db :db} _]
+   (let [uri (assoc source-host
+                  :path "/get-pin-image-names")]
+         (js/console.log
+          (str
+           "Fetching data: " uri))
+         ;; we return a map of (side) effects
+         {:http-xhrio {:method          :get
+                       :uri             uri
+                       :format          (json-request-format)
+                       :response-format (json-response-format {:keywords? true})
+                       :on-success      [:process-pin-image-names]
+                       ;; ignore :on-failure for now
+                       }
+          :db  db})))
+
+(rf/reg-event-fx
   :fetch-docs
   (fn [_ _]
     {:http-xhrio {:method          :get
@@ -126,6 +144,17 @@
            (:view db)
            (refresh-map-pins (assoc db :data data))
            db)})))
+
+(rf/reg-event-fx
+  :process-pin-image-names
+  (fn
+    [{db :db} [_ response]]
+    (let [db' (assoc db :available-pin-images (set response))]
+    (js/console.log (str "processing pin images"))
+    {:db (if
+           (:view db')
+           (refresh-map-pins db')
+           db')})))
 
 (rf/reg-event-db
   :set-docs

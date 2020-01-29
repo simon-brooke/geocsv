@@ -13,7 +13,7 @@
                  [com.cognitect/transit-clj "0.8.319"]
                  [compojure "1.6.1"]
                  [cprop "0.1.15"]
-                 [csv2edn "0.1.5"]
+                 [csv2edn "0.1.6"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [expound "0.8.3"]
                  [funcool/struct "1.4.0"]
@@ -43,7 +43,10 @@
                  [selmer "1.12.18"]]
 
   :min-lein-version "2.0.0"
-  :npm {:dependencies [[leaflet "1.3.1"]]}
+  :npm {:dependencies [[bulma "0.8.0"]
+                       [leaflet "1.3.1"]
+                       [material-design-icons "3.0.1"]]
+        :root "resources/public/js/lib/node_modules"}
 
   :source-paths ["src/clj" "src/cljs" "src/cljc"]
   :test-paths ["test/clj"]

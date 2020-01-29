@@ -26,7 +26,9 @@
     (-> #'rest-routes
         (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats))
-    (route/resources "/")
+    (ring/create-resource-handler
+         {:path "/"})
+;;    (route/resources "/")
     (route/not-found
       (:body
         (error-page {:status 404
