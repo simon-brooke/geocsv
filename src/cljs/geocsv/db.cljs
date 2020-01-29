@@ -28,6 +28,14 @@
 
 (def default-db
   {:page :home
-   :available-pin-images #{"Planning authority" "unknown"}  ;; need to be fetched from server side
+   :available-pin-images #{"Planning-authority"
+                           "Landowner"
+                           "Unknown"
+                           "Anchor-customer"
+                           "Investor"
+                           "Broadband-supplier"
+                           "Operator"
+                           "Other-key-customers"
+                           "Power-supplier"}  ;; need to be fetched from server side
    :map {:map-centre [56 -4]
          :map-zoom  6}})
