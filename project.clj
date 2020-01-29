@@ -32,6 +32,7 @@
                  [org.clojure/tools.cli "0.4.2"]
                  [org.clojure/tools.logging "0.5.0"]
                  [org.webjars.npm/bulma "0.8.0"]
+                 [org.webjars.npm/leaflet "1.6.0"]
                  [org.webjars.npm/material-icons "0.3.1"]
                  [org.webjars/webjars-locator "0.38"]
                  [re-frame "0.10.9"]
@@ -43,10 +44,6 @@
                  [selmer "1.12.18"]]
 
   :min-lein-version "2.0.0"
-  :npm {:dependencies [[bulma "0.8.0"]
-                       [leaflet "1.3.1"]
-                       [material-design-icons "3.0.1"]]
-        :root "resources/public/js/lib/node_modules"}
 
   :source-paths ["src/clj" "src/cljs" "src/cljc"]
   :test-paths ["test/clj"]
@@ -56,7 +53,6 @@
 
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-codox "0.10.7"]
-            [lein-npm "0.6.2"]
             [lein-release "1.0.5"]]
 
   :clean-targets ^{:protect false}

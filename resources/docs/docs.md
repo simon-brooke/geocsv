@@ -20,17 +20,31 @@ If you run the server running **geocsv**, the simplest way to add CSV files is s
 
     https://geocsv.example.com/
 
-and the file you want to view is `myfile.csv`, then you would specify this as
+and the file you want to view is `myfile.csv`, then you would specify this as the value of `file` in the query part of the URL.
 
     https://geocsv.example.com/?file=myfile.csv
 
+### Loading CSV file onto another public server
+
+If you're not running the **geocsv** server yourself, you can upload the CSV to another server which is accessible by the **geocsv** server. You can then map data from the CSV file by specifying the URL of the file as the value of `uri` in the query part of the URL:
+
+    https://geocsv.example.com/?uri=http://my.other.server/path/to/myfile.csv
+
 ### Using a Google spreadsheet
 
-If you use [Google Sheets](https://www.google.co.uk/sheets/about/), then every sheet has a 'document id', a long string of characters which uniquely identifies that sheet. Suppose your Google spreadsheet has a document id of `abcdefghijklmnopqrstuvwxyz-12345`, then you could pull data from this spreadsheet by specifying:
+If you use [Google Sheets](https://www.google.co.uk/sheets/about/), then every sheet has a 'document id', a long string of characters which uniquely identifies that sheet. Suppose your Google spreadsheet has a document id of `abcdefghijklmnopqrstuvwxyz-12345`, then you could pull data from this spreadsheet by specifying this as the value of `docid` in the query part of the URL:
 
     https://geocsv.example.com/?docid=abcdefghijklmnopqrstuvwxyz-12345
 
 The spreadsheet **must** be publicly readable.
+
+### Precedence
+
+Nothing, of course, stops you from specifying multiple arguments in the query part of the URL, but only one will be used. The precedence is in this order:
+
+1. `docid` is considered first, and overrides anything else;
+2. `uri` is considered next, and overrides `file`;
+3. the value of `file` is considered only if neither of the other two are present.
 
 ## Not yet working
 

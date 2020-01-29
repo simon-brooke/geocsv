@@ -3,6 +3,7 @@
     [day8.re-frame.http-fx]
     [reagent.core :as r]
     [re-frame.core :as rf]
+    [geocsv.gis :as gis]
     [geocsv.views.map :as mv]
     [goog.events :as events]
     [goog.history.EventType :as HistoryEventType]
@@ -11,7 +12,7 @@
     [geocsv.events]
     [reitit.core :as reitit]
     [reitit.frontend.easy :as rfe]
-    [clojure.string :as string])
+    [clojure.string :as s])
   (:import goog.History))
 
 (defn nav-link [uri title page]
@@ -39,7 +40,31 @@
 
 (defn about-page []
   [:section.section>div.container>div.content
-   [:img {:src "/img/warning_clojure.png"}]])
+   [:img {:src "/img/warning_clojure.png"}]
+   (when-let [images @(rf/subscribe [:available-pin-images])]
+     [:div
+      [:h2 "The following pin images are available on this server"]
+      (apply
+        vector
+        (cons
+          :ol
+          (map
+            #(vector
+               :ol
+               [:img
+                {:src
+                 (str
+                   "img/map-pins/"
+                   (s/capitalize
+                   (s/replace
+                     (s/lower-case
+                       (str %))
+                     #"[^a-z0-9]" "-"))
+                   "-pin.png")
+                   :alt %}]
+               " "
+               %)
+            (sort images))))])])
 
 (defn home-page []
   [:section.section>div.container>div.content

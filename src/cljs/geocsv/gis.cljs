@@ -81,7 +81,7 @@
     (if
       (available category)
       (str category "-pin")
-      "unknown-pin")))
+      "Unknown-pin")))
 
 (defn popup-content
   "Appropriate content for the popup of a map pin for this `record`."
