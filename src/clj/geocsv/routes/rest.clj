@@ -6,6 +6,7 @@
             [clojure.java.io :as io]
             [clojure.string :as s]
             [clojure.tools.logging :as log]
+            [cpath-clj.core :as cp]
             [compojure.core :refer [defroutes GET POST]]
             [csv2edn.csv2edn :refer :all]
             [noir.response :as nresponse]
@@ -37,19 +38,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn get-pin-image-names
+  "Return the category names for which we have pin images; `request` is ignored.
+
+  This looks odd - why not file-seq over the directory? - but the answer is we
+  may be running in a jar file, and if we are that will fail."
   [request]
   (ar/do-or-server-fail
     (map
-      #(s/replace (.getName %) #"-pin\.png$" "")
-      (let [grammar-matcher (.getPathMatcher
-                            (java.nio.file.FileSystems/getDefault)
-                            "glob:*-pin.png")]
+      #(s/replace (s/replace (str %) #"-pin\.png$" "") "/" "")
       (->> "public/img/map-pins"
-           io/resource
-           io/file
-           file-seq
-           (filter #(.isFile %))
-           (filter #(.matches grammar-matcher (.getFileName (.toPath %)))))))
+           cp/resources
+           keys
+           (filter #(re-find #".*-pin.png" %))))
     200))
 
 (defn get-data-uri

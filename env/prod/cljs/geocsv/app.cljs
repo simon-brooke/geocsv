@@ -1,5 +1,5 @@
 (ns geocsv.app
-  (:require [geocsv.core :as core]))
+  (:require [geocsv.client.core :as core]))
 
 ;;ignore println statements in prod
 (set! *print-fn* (fn [& _]))
