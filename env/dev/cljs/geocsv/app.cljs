@@ -1,6 +1,6 @@
 (ns^:figwheel-no-load geocsv.app
   (:require
-    [geocsv.core :as core]
+    [geocsv.client.core :as core]
     [cljs.spec.alpha :as s]
     [expound.alpha :as expound]
     [devtools.core :as devtools]))

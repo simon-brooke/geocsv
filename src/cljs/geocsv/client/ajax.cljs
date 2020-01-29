@@ -1,4 +1,4 @@
-(ns geocsv.ajax
+(ns geocsv.client.ajax
   (:require
     [ajax.core :as ajax]
     [luminus-transit.time :as time]

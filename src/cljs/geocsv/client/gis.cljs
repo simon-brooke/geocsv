@@ -1,6 +1,6 @@
 (ns ^{:doc "geocsv app map stuff."
       :author "Simon Brooke"}
-  geocsv.gis
+  geocsv.client.gis
   (:require [ajax.core :refer [GET]]
             [ajax.json :refer [json-request-format json-response-format]]
             [cljs.reader :refer [read-string]]
@@ -158,17 +158,52 @@
                    (.removeLayer view %)))
     view))
 
+(defn compute-zoom
+  "See [explanation here](https://leafletjs.com/examples/zoom-levels/). Brief
+  summary: it's hard, but it doesn't need to be precise."
+  [min-lat max-lat min-lng max-lng]
+  (let [n (min (/ 360 (- max-lng min-lng)) (/ 180 (- max-lat min-lat)))]
+    (first
+      (remove
+        nil?
+        (map
+          #(if (> (reduce * (repeat 2 %)) n) %)
+          (range))))))
+
+(defn compute-centre
+  "Compute, and return as a map with keys `:latitude` and `:longitude`, the
+  centre of the locations of these records as indicated by the values of their
+  `:latitude` and `:longitude` keys."
+  [records]
+  (let [lats (filter number? (map :latitude records))
+        min-lat (apply min lats)
+        max-lat (apply max lats)
+        lngs (filter number? (map :longitude records))
+        min-lng (apply min lngs)
+        max-lng (apply max lngs)]
+    (if-not
+      (or (empty? lats) (empty? lngs))
+      {:latitude (+ min-lat (/ (- max-lat min-lat) 2))
+       :longitude (+ min-lng (/ (- max-lng min-lng) 2))
+       :zoom (compute-zoom min-lat max-lat min-lng max-lng)}
+      {})))
 
 (defn refresh-map-pins
   "Refresh the map pins on the current map. Side-effecty; liable to be
     problematic."
   [db]
   (let [view (map-remove-pins @(subscribe [:view]))
-        data (:data db)]
+        data (:data db)
+        centre (compute-centre data)]
     (if
       view
       (let [added (remove nil? (map #(add-map-pin db %1 %2 view) data (range)))]
         (js/console.log (str "Adding " (count added) " pins"))
-        db)
+        (if
+          (:latitude centre)
+          (do
+            (js/console.log (str "computed centre: " centre))
+            (.setView view (clj->js [(:latitude centre) (:longitude centre)]) (:zoom centre))
+            (merge db centre))
+          db))
       (do (js/console.log "View is not yet ready") db))))
-
