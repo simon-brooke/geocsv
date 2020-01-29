@@ -1,11 +1,11 @@
 (ns ^{:doc "a map onto which to project CSV data."
       :author "Simon Brooke"}
-  geocsv.views.map
+  geocsv.client.views.map
   (:require [cljsjs.leaflet]
             [re-frame.core :refer [reg-sub subscribe dispatch dispatch-sync]]
             [reagent.core :as reagent]
             [recalcitrant.core :refer [error-boundary]]
-            [geocsv.gis :refer [refresh-map-pins get-current-location]]))
+            [geocsv.client.gis :refer [refresh-map-pins get-current-location]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -61,22 +61,14 @@
   (let [view (.setView
                (.map js/L
                      "map"
-                     ;; (clj->js {:zoomControl false})
-                     )
-               #js [56 -4] ;;[@(subscribe [:latitude]) @(subscribe [:longitude])]
+                     (clj->js {:zoomControl false}))
+               #js [@(subscribe [:latitude]) @(subscribe [:longitude])]
                @(subscribe [:zoom]))]
     (.addTo (.tileLayer js/L osm-url
                         (clj->js {:attribution osm-attrib
                                   :maxZoom 18}))
             view)
     (dispatch-sync [:set-view view])
-;;     (.on view "moveend"
-;;          (fn [_] (let [c (.getCenter view)]
-;;                    (js/console.log (str "Moving centre to " c))
-;;                    (dispatch-sync [:set-latitude (.-lat c)])
-;;                    (dispatch-sync [:set-longitude (.-lng c)])
-;;                    (dispatch [:fetch-data]))))
-;;    (refresh-map-pins)
     view))
 
 (defn map-did-mount
@@ -91,7 +83,7 @@
 (defn map-render
   "Render the actual div containing the map."
   []
-  [:div#map {:style {:height "1000px"}}])
+  [:div#map {:style {:height "800px"}}])
 
 (defn panel
   "A reagent class for the map object."

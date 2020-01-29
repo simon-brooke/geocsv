@@ -1,6 +1,6 @@
 (ns ^{:doc "geocsv app initial database."
       :author "Simon Brooke"}
-  geocsv.db)
+  geocsv.client.db)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -28,6 +28,14 @@
 
 (def default-db
   {:page :home
-   :available-pin-images #{"Planning authority" "unknown"}  ;; need to be fetched from server side
-   :map {:map-centre [56 -4]
-         :map-zoom  6}})
+   :available-pin-images #{"Planning-authority"
+                           "Landowner"
+                           "Unknown"
+                           "Anchor-customer"
+                           "Investor"
+                           "Broadband-supplier"
+                           "Operator"
+                           "Other-key-customers"
+                           "Power-supplier"}  ;; need to be fetched from server side
+   :latitude 56
+   :longitude -4})

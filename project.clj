@@ -1,4 +1,4 @@
-(defproject geocsv "0.1.0"
+(defproject geocsv "0.1.1"
 
   :description "A wee tool to show comma-separated value data on a map."
   :url "http://example.com/FIXME"
@@ -12,8 +12,9 @@
                  [com.cemerick/url "0.1.1"]
                  [com.cognitect/transit-clj "0.8.319"]
                  [compojure "1.6.1"]
+                 [cpath-clj "0.1.2"]
                  [cprop "0.1.15"]
-                 [csv2edn "0.1.5"]
+                 [csv2edn "0.1.6"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [expound "0.8.3"]
                  [funcool/struct "1.4.0"]
@@ -32,6 +33,7 @@
                  [org.clojure/tools.cli "0.4.2"]
                  [org.clojure/tools.logging "0.5.0"]
                  [org.webjars.npm/bulma "0.8.0"]
+                 [org.webjars.npm/leaflet "1.6.0"]
                  [org.webjars.npm/material-icons "0.3.1"]
                  [org.webjars/webjars-locator "0.38"]
                  [re-frame "0.10.9"]
@@ -43,7 +45,6 @@
                  [selmer "1.12.18"]]
 
   :min-lein-version "2.0.0"
-  :npm {:dependencies [[leaflet "1.3.1"]]}
 
   :source-paths ["src/clj" "src/cljs" "src/cljc"]
   :test-paths ["test/clj"]
@@ -53,8 +54,10 @@
 
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-codox "0.10.7"]
-            [lein-npm "0.6.2"]
             [lein-release "1.0.5"]]
+
+  :deploy-repositories [["releases" :clojars]
+                        ["snapshots" :clojars]]
 
   :clean-targets ^{:protect false}
   [:target-path [:cljsbuild :builds :app :compiler :output-dir] [:cljsbuild :builds :app :compiler :output-to]]
@@ -108,7 +111,7 @@
                   :cljsbuild{:builds
                    {:app
                     {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                     :figwheel {:on-jsload "geocsv.core/mount-components"}
+                     :figwheel {:on-jsload "geocsv.client.core/mount-components"}
                      :compiler
                      {:output-dir "target/cljsbuild/public/js/out"
                       :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
@@ -141,4 +144,17 @@
 
                   }
    :profiles/dev {}
-   :profiles/test {}})
+   :profiles/test {}}
+
+  ;; `lein release` doesn't play nice with `git flow release`. Run `lein release` in the
+  ;; `develop` branch, then reset the `master` branch to the release tag.
+
+  :release-tasks [["vcs" "assert-committed"]
+                  ["clean"]
+                  ["codox"]
+                  ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["uberjar"]
+                  ["deploy" "clojars"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]])

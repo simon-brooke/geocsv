@@ -1,6 +1,6 @@
 (ns ^{:doc "geocsv app map stuff."
       :author "Simon Brooke"}
-  geocsv.gis
+  geocsv.client.gis
   (:require [ajax.core :refer [GET]]
             [ajax.json :refer [json-request-format json-response-format]]
             [cljs.reader :refer [read-string]]
@@ -71,48 +71,56 @@
 
 (defn pin-image
   "Return the name of a suitable pin image for this `record`."
-  [record]
-  (let [available @(subscribe [:available-pin-images])]
-    (js/console.log (str "pin-image: available is of type `" (type available) "`; `(fn? available)` returns " (set? available)))
+  [db record]
+  (let [available (:available-pin-images db)
+        category (s/capitalize
+                   (s/replace
+                     (s/lower-case
+                       (str (:category record)))
+                     #"[^a-z0-9]" "-"))]
     (if
-      (contains? available (:category record))
-      (str
-        (s/capitalize
-          (s/replace (s/lower-case (str (:category record))) #"[^a-z0-9]" "-")) "-pin")
-      "unknown-pin")))
+      (available category)
+      (str category "-pin")
+      "Unknown-pin")))
 
 (defn popup-content
   "Appropriate content for the popup of a map pin for this `record`."
   [record]
-  (str
-    "<h5>"
-    (:name record)
-    "</h5><dl>"
-    (apply
-      str
-      (map #(str "<dt>" (name %) "</dt><dd>" (record %) "</dd>") (keys record)))
-    "</dl>"))
+  (if
+    (map? record) ;; which it should be!
+    (str
+      "<h5>"
+      (:name record)
+      "</h5><dl>"
+      (apply
+        str
+        (map
+          #(str "<dt>" (name %) "</dt><dd>" (record %) "</dd>")
+          (filter #(record %) (keys record))))
+      "</dl>")))
 
 (defn popup-table-content
   "Appropriate content for the popup of a map pin for this `record`, as a
   table. Obviously this is semantically wrong, but for styling reasons it's
   worth trying."
   [record]
-  (str
-    "<h5>"
-    (:name record)
-    "</h5><table>"
-    (apply
-      str
-      (map
-        #(str "<tr><th>" (name %) "</th><td>" (record %) "</td></tr>")
-        (sort (keys record))))
-    "</table>"))
+  (if
+    (map? record) ;; which it should be!
+    (str
+      "<h5>"
+      (:name record)
+      "</h5><table>"
+      (apply
+        str
+        (map
+          #(str "<tr><th>" (name %) "</th><td>" (record %) "</td></tr>")
+          (sort (filter #(record %) (keys record)))))
+      "</table>")))
 
 (defn add-map-pin
   "Add an appropriate map-pin for this `record` in this map `view`, if it
   has a valid `:latitude` and `:longitude`."
-  [record index view]
+  [db record index view]
   (let [lat (:latitude record)
         lng (:longitude record)]
     (if
@@ -125,7 +133,7 @@
                        (clj->js
                          {:iconAnchor [16 41]
                           :iconSize [32 42]
-                          :iconUrl (str "img/map-pins/" (pin-image record) ".png")
+                          :iconUrl (str "img/map-pins/" (pin-image db record) ".png")
                           :riseOnHover true
                           :shadowAnchor [16 23]
                           :shadowSize [57 24]
@@ -150,17 +158,52 @@
                    (.removeLayer view %)))
     view))
 
+(defn compute-zoom
+  "See [explanation here](https://leafletjs.com/examples/zoom-levels/). Brief
+  summary: it's hard, but it doesn't need to be precise."
+  [min-lat max-lat min-lng max-lng]
+  (let [n (min (/ 360 (- max-lng min-lng)) (/ 180 (- max-lat min-lat)))]
+    (first
+      (remove
+        nil?
+        (map
+          #(if (> (reduce * (repeat 2 %)) n) %)
+          (range))))))
+
+(defn compute-centre
+  "Compute, and return as a map with keys `:latitude` and `:longitude`, the
+  centre of the locations of these records as indicated by the values of their
+  `:latitude` and `:longitude` keys."
+  [records]
+  (let [lats (filter number? (map :latitude records))
+        min-lat (apply min lats)
+        max-lat (apply max lats)
+        lngs (filter number? (map :longitude records))
+        min-lng (apply min lngs)
+        max-lng (apply max lngs)]
+    (if-not
+      (or (empty? lats) (empty? lngs))
+      {:latitude (+ min-lat (/ (- max-lat min-lat) 2))
+       :longitude (+ min-lng (/ (- max-lng min-lng) 2))
+       :zoom (compute-zoom min-lat max-lat min-lng max-lng)}
+      {})))
 
 (defn refresh-map-pins
   "Refresh the map pins on the current map. Side-effecty; liable to be
     problematic."
   [db]
   (let [view (map-remove-pins @(subscribe [:view]))
-        data (:data db)]
+        data (:data db)
+        centre (compute-centre data)]
     (if
       view
-      (let [added (remove nil? (map #(add-map-pin %1 %2 view) data (range)))]
-        (js/console.log (str "Adding " (count added) " pins")))
-      (js/console.log "View is not yet ready"))
-    db))
-
+      (let [added (remove nil? (map #(add-map-pin db %1 %2 view) data (range)))]
+        (js/console.log (str "Adding " (count added) " pins"))
+        (if
+          (:latitude centre)
+          (do
+            (js/console.log (str "computed centre: " centre))
+            (.setView view (clj->js [(:latitude centre) (:longitude centre)]) (:zoom centre))
+            (merge db centre))
+          db))
+      (do (js/console.log "View is not yet ready") db))))

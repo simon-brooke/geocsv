@@ -1,9 +1,9 @@
-(ns geocsv.events
+(ns geocsv.client.events
   (:require [ajax.core :as ajax]
             [ajax.json :refer [json-request-format json-response-format]]
             [cemerick.url :refer [url url-encode]]
-            [geocsv.db :refer [default-db]]
-            [geocsv.gis :refer [refresh-map-pins]]
+            [geocsv.client.db :refer [default-db]]
+            [geocsv.client.gis :refer [compute-centre refresh-map-pins]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as rfe]
             [reitit.frontend.controllers :as rfc]))
@@ -40,7 +40,6 @@
     :query nil
     :anchor nil))
 
-
 ;;dispatchers: keep in alphabetical order, please.
 (rf/reg-event-fx
   :bad-data
@@ -71,6 +70,24 @@
                        :response-format (json-response-format {:keywords? true})
                        :on-success      [:process-data]
                        :on-failure      [:bad-data]}
+          :db  db})))
+
+(rf/reg-event-fx
+ :fetch-pin-image-names
+ (fn [{db :db} _]
+   (let [uri (assoc source-host
+                  :path "/get-pin-image-names")]
+         (js/console.log
+          (str
+           "Fetching data: " uri))
+         ;; we return a map of (side) effects
+         {:http-xhrio {:method          :get
+                       :uri             uri
+                       :format          (json-request-format)
+                       :response-format (json-response-format {:keywords? true})
+                       :on-success      [:process-pin-image-names]
+                       ;; ignore :on-failure for now
+                       }
           :db  db})))
 
 (rf/reg-event-fx
@@ -120,12 +137,26 @@
   ;; TODO: why is this an `-fx`? Does it need to be?
   (fn
     [{db :db} [_ response]]
-    (let [data (js->clj response)]
-    (js/console.log (str "processing fetched JSON data"))
+    (let [db' (assoc db :data (js->clj response))]
+      (js/console.log (str "processing fetched JSON data"))
+      {:db (if-let [data (:data db')]
+             (let [centre (compute-centre data)]
+               (if
+                 (:view db')
+                 (refresh-map-pins (merge db' centre))
+                 db)
+               db))})))
+
+(rf/reg-event-fx
+  :process-pin-image-names
+  (fn
+    [{db :db} [_ response]]
+    (let [db' (assoc db :available-pin-images (set response))]
+    (js/console.log (str "processing pin images"))
     {:db (if
-           (:view db)
-           (refresh-map-pins (assoc db :data data))
-           db)})))
+           (:view db')
+           (refresh-map-pins db')
+           db')})))
 
 (rf/reg-event-db
   :set-docs
@@ -166,11 +197,6 @@
     (let [v (or (nth (:map-centre (:map db)) 1) -4)]
       (js/console.log (str "Fetching longitude" v))
       v)))
-
-(rf/reg-sub
-  :map
-  (fn [db _]
-    (:map db)))
 
 (rf/reg-sub
   :route

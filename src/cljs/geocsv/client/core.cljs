@@ -1,17 +1,18 @@
-(ns geocsv.core
+(ns geocsv.client.core
   (:require
     [day8.re-frame.http-fx]
     [reagent.core :as r]
     [re-frame.core :as rf]
-    [geocsv.views.map :as mv]
+    [geocsv.client.gis :as gis]
+    [geocsv.client.views.map :as mv]
     [goog.events :as events]
     [goog.history.EventType :as HistoryEventType]
     [markdown.core :refer [md->html]]
-    [geocsv.ajax :as ajax]
-    [geocsv.events]
+    [geocsv.client.ajax :as ajax]
+    [geocsv.client.events]
     [reitit.core :as reitit]
     [reitit.frontend.easy :as rfe]
-    [clojure.string :as string])
+    [clojure.string :as s])
   (:import goog.History))
 
 (defn nav-link [uri title page]
@@ -39,7 +40,31 @@
 
 (defn about-page []
   [:section.section>div.container>div.content
-   [:img {:src "/img/warning_clojure.png"}]])
+   [:img {:src "/img/warning_clojure.png"}]
+   (when-let [images @(rf/subscribe [:available-pin-images])]
+     [:div
+      [:h2 "The following pin images are available on this server"]
+      (apply
+        vector
+        (cons
+          :ol
+          (map
+            #(vector
+               :ol
+               [:img
+                {:src
+                 (str
+                   "img/map-pins/"
+                   (s/capitalize
+                   (s/replace
+                     (s/lower-case
+                       (str %))
+                     #"[^a-z0-9]" "-"))
+                   "-pin.png")
+                   :alt %}]
+               " "
+               %)
+            (sort images))))])])
 
 (defn home-page []
   [:section.section>div.container>div.content
@@ -90,6 +115,7 @@
 
 (defn init! []
   (rf/dispatch-sync [:initialise-db])
+  (rf/dispatch [:fetch-pin-image-names])
   (start-router!)
   (ajax/load-interceptors!)
   (mount-components))
