@@ -22,13 +22,14 @@
   (routes
     (-> #'home-routes
         (wrap-routes middleware/wrap-csrf)
-        (wrap-routes middleware/wrap-formats))
+        (wrap-routes middleware/wrap-formats)
+        wrap-webjars)
     (-> #'rest-routes
         (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats))
-    (ring/create-resource-handler
-         {:path "/"})
-;;    (route/resources "/")
+;;     (ring/create-resource-handler
+;;          {:path "/"})
+   (route/resources "/")
     (route/not-found
       (:body
         (error-page {:status 404
