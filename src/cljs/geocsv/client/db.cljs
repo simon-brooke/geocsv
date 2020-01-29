@@ -38,6 +38,4 @@
                            "Other-key-customers"
                            "Power-supplier"}  ;; need to be fetched from server side
    :latitude 56
-   :longitude -4
-   :map {:map-centre [56 -4]
-         :map-zoom  6}})
+   :longitude -4})
