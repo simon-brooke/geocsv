@@ -1,6 +1,6 @@
 (ns ^{:doc "geocsv app initial database."
       :author "Simon Brooke"}
-  geocsv.db)
+  geocsv.client.db)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -37,5 +37,7 @@
                            "Operator"
                            "Other-key-customers"
                            "Power-supplier"}  ;; need to be fetched from server side
+   :latitude 56
+   :longitude -4
    :map {:map-centre [56 -4]
          :map-zoom  6}})

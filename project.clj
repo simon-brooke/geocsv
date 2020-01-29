@@ -107,7 +107,7 @@
                   :cljsbuild{:builds
                    {:app
                     {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                     :figwheel {:on-jsload "geocsv.core/mount-components"}
+                     :figwheel {:on-jsload "geocsv.client.core/mount-components"}
                      :compiler
                      {:output-dir "target/cljsbuild/public/js/out"
                       :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}

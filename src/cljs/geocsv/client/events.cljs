@@ -1,9 +1,9 @@
-(ns geocsv.events
+(ns geocsv.client.events
   (:require [ajax.core :as ajax]
             [ajax.json :refer [json-request-format json-response-format]]
             [cemerick.url :refer [url url-encode]]
-            [geocsv.db :refer [default-db]]
-            [geocsv.gis :refer [refresh-map-pins]]
+            [geocsv.client.db :refer [default-db]]
+            [geocsv.client.gis :refer [compute-centre refresh-map-pins]]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as rfe]
             [reitit.frontend.controllers :as rfc]))
@@ -39,7 +39,6 @@
     :path "/"
     :query nil
     :anchor nil))
-
 
 ;;dispatchers: keep in alphabetical order, please.
 (rf/reg-event-fx
@@ -138,12 +137,15 @@
   ;; TODO: why is this an `-fx`? Does it need to be?
   (fn
     [{db :db} [_ response]]
-    (let [data (js->clj response)]
-    (js/console.log (str "processing fetched JSON data"))
-    {:db (if
-           (:view db)
-           (refresh-map-pins (assoc db :data data))
-           db)})))
+    (let [db' (assoc db :data (js->clj response))]
+      (js/console.log (str "processing fetched JSON data"))
+      {:db (if-let [data (:data db')]
+             (let [centre (compute-centre data)]
+               (if
+                 (:view db')
+                 (refresh-map-pins (merge db' centre))
+                 db)
+               db))})))
 
 (rf/reg-event-fx
   :process-pin-image-names

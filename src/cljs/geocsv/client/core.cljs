@@ -1,15 +1,15 @@
-(ns geocsv.core
+(ns geocsv.client.core
   (:require
     [day8.re-frame.http-fx]
     [reagent.core :as r]
     [re-frame.core :as rf]
-    [geocsv.gis :as gis]
-    [geocsv.views.map :as mv]
+    [geocsv.client.gis :as gis]
+    [geocsv.client.views.map :as mv]
     [goog.events :as events]
     [goog.history.EventType :as HistoryEventType]
     [markdown.core :refer [md->html]]
-    [geocsv.ajax :as ajax]
-    [geocsv.events]
+    [geocsv.client.ajax :as ajax]
+    [geocsv.client.events]
     [reitit.core :as reitit]
     [reitit.frontend.easy :as rfe]
     [clojure.string :as s])
