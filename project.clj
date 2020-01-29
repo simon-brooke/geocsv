@@ -12,6 +12,7 @@
                  [com.cemerick/url "0.1.1"]
                  [com.cognitect/transit-clj "0.8.319"]
                  [compojure "1.6.1"]
+                 [cpath-clj "0.1.2"]
                  [cprop "0.1.15"]
                  [csv2edn "0.1.6"]
                  [day8.re-frame/http-fx "0.1.6"]

@@ -83,7 +83,7 @@
 (defn map-render
   "Render the actual div containing the map."
   []
-  [:div#map {:style {:height "1000px"}}])
+  [:div#map {:style {:height "800px"}}])
 
 (defn panel
   "A reagent class for the map object."

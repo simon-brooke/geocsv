@@ -54,10 +54,6 @@ GeoCSV is at an early stage of development, and some features are not yet workin
 
 At the current stage of development, if no appropriate image exists in the `resources/public/img/map-pins` folder, that's your problem. **TODO:** I intend at some point to make missing pin images default to `unknown-pin.png`, which does exist.
 
-### Doesn't scale and centre the map to show the data in the sheet
-
-Currently the map is initially centred roughly on the centre of Scotland, and scaled arbitrarily. It should compute an appropriate centre and scale from the data provided, but currently doesn't.
-
 ## Prerequisites
 
 You will need [Leiningen][1] 2.0 or above installed.

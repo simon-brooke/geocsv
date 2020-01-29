@@ -199,11 +199,6 @@
       v)))
 
 (rf/reg-sub
-  :map
-  (fn [db _]
-    (:map db)))
-
-(rf/reg-sub
   :route
   (fn [db _]
     (-> db :route)))
