@@ -1,6 +1,6 @@
 # geocsv
 
-GeoCSV is a wee tool to show comma-separated value data on a map.
+A wee tool to show comma-separated value data on a map.
 
 The CSV file must have
 

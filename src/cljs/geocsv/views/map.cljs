@@ -70,13 +70,6 @@
                                   :maxZoom 18}))
             view)
     (dispatch-sync [:set-view view])
-;;     (.on view "moveend"
-;;          (fn [_] (let [c (.getCenter view)]
-;;                    (js/console.log (str "Moving centre to " c))
-;;                    (dispatch-sync [:set-latitude (.-lat c)])
-;;                    (dispatch-sync [:set-longitude (.-lng c)])
-;;                    (dispatch [:fetch-data]))))
-;;    (refresh-map-pins)
     view))
 
 (defn map-did-mount
