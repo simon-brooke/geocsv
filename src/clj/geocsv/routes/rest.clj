@@ -72,7 +72,7 @@
   "Return JSON formatted data taken from the CSV file with the name `filename`
   in the directory `resources/public/data`."
   [filename]
-  (-> (str "public/data/" filename) io/resource io/file io/reader csv->json))
+  (-> (str "public/data/" filename) io/resource io/reader csv->json))
 
 (defn get-data
   "Return JSON formatted data from the source implied by this `request`."

@@ -56,6 +56,9 @@
             [lein-codox "0.10.7"]
             [lein-release "1.0.5"]]
 
+  :deploy-repositories [["releases" :clojars]
+                        ["snapshots" :clojars]]
+
   :clean-targets ^{:protect false}
   [:target-path [:cljsbuild :builds :app :compiler :output-dir] [:cljsbuild :builds :app :compiler :output-to]]
   :figwheel
@@ -141,4 +144,17 @@
 
                   }
    :profiles/dev {}
-   :profiles/test {}})
+   :profiles/test {}}
+
+  ;; `lein release` doesn't play nice with `git flow release`. Run `lein release` in the
+  ;; `develop` branch, then reset the `master` branch to the release tag.
+
+  :release-tasks [["vcs" "assert-committed"]
+                  ["clean"]
+                  ["codox"]
+                  ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["uberjar"]
+                  ["deploy" "clojars"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]])
