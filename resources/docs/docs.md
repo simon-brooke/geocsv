@@ -2,6 +2,8 @@
 
 A wee tool to show comma-separated value data on a map.
 
+[![Clojars Project](https://img.shields.io/clojars/v/geocsv.svg)](https://clojars.org/geocsv)
+
 The CSV file must have
 
 * column names in the first row;
@@ -48,11 +50,11 @@ Nothing, of course, stops you from specifying multiple arguments in the query pa
 
 ## Not yet working
 
-GeoCSV is at an early stage of development, and some features are not yet working.
+**geocsv** is at an early stage of development, and some features are not yet working.
 
 ### Missing map pin images
 
-At the current stage of development, if no appropriate image exists in the `resources/public/img/map-pins` folder, that's your problem. **TODO:** I intend at some point to make missing pin images default to `unknown-pin.png`, which does exist.
+At the current stage of development, if no appropriate image exists in the `resources/public/img/map-pins` folder, that's your problem. See [issue #4](https://github.com/simon-brooke/geocsv/issues/4). If you fancy adding some more, I'll happily accept a pull request.
 
 ## Prerequisites
 

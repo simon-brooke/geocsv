@@ -27,8 +27,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def default-db
-  {:page :home
-   :available-pin-images #{"Planning-authority"
+  {:available-pin-images #{"Planning-authority"
                            "Landowner"
                            "Unknown"
                            "Anchor-customer"
@@ -38,4 +37,6 @@
                            "Other-key-customers"
                            "Power-supplier"}  ;; need to be fetched from server side
    :latitude 56
-   :longitude -4})
+   :longitude -4
+   :page :home
+   :zoom 1})
