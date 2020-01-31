@@ -7,8 +7,6 @@ BEGIN {
 }
 {
   gsub( / /, "-", $1);
-  printf( "cat Blank-pin.svg | sed  's/fill:#dddddc;/fill:%s/' > \"%s-pin.svg\"\n", $2, $1);
-}
-END {
-  print( "mogrify -format png *.svg");
+  printf( "cat Blank-pin.svg | sed  's/fill:#dddddc;/fill:%s/' > \"%s-pin.svg\"\n", tolower($2), $1);
+  printf( "inkscape %s-pin.svg --export-png=%s-pin.png\n", $1, $1);
 }
