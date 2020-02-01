@@ -21,6 +21,3 @@ profiles.clj
 
 resources/docs/orig.md
 
-*.png
-
-*.svg
