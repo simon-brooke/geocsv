@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <meta charset="UTF-8"/>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Welcome to geocsv</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to geocsv</title>
   </head>
   <body>
 
@@ -12,17 +12,26 @@
         <div class="container is-fluid">
           <div class="content">
             <h4 class="title">Welcome to geocsv</h4>
-            <p>If you're seeing this message, that means you haven't yet compiled your ClojureScript!</p>
-            <p>Please run <code>lein figwheel</code> to start the ClojureScript compiler and reload the page.</p>
-            <h4>For better ClojureScript development experience in Chrome follow these steps:</h4>
-            <ul>
-              <li>Open DevTools
-              <li>Go to Settings ("three dots" icon in the upper right corner of DevTools > Menu > Settings F1 > General > Console)
-              <li>Check-in "Enable custom formatters"
-              <li>Close DevTools
-              <li>Open DevTools
-            </ul>
-            <p>See <a href="http://www.luminusweb.net/docs/clojurescript.md">ClojureScript</a> documentation for further details.</p>
+            <div class="splash-screen">
+              <div class="sk-fading-circle">
+                <div class="sk-circle1 sk-circle"></div>
+                <div class="sk-circle2 sk-circle"></div>
+                <div class="sk-circle3 sk-circle"></div>
+                <div class="sk-circle4 sk-circle"></div>
+                <div class="sk-circle5 sk-circle"></div>
+                <div class="sk-circle6 sk-circle"></div>
+                <div class="sk-circle7 sk-circle"></div>
+                <div class="sk-circle8 sk-circle"></div>
+                <div class="sk-circle9 sk-circle"></div>
+                <div class="sk-circle10 sk-circle"></div>
+                <div class="sk-circle11 sk-circle"></div>
+                <div class="sk-circle12 sk-circle"></div>
+              </div>
+            </div>
+            <p class="footer">
+              You Yes Yet is loading.
+              You must enable JavaScript to use the <b>geocsv</b> app.
+            </p>
           </div>
         </div>
       </section>
@@ -33,6 +42,7 @@
     <footer>
       <div id="credits">
         <div>
+          {% if version %}Version {{version}} ||{% endif %}
           <img height="16" width="16" alt="Luminus" src="{{servlet-context}}/img/credits/luminus-logo.png"/>Built with <a href="http://www.luminusweb.net/">LuminusWeb</a> ||
           <img height="16" width="16" alt="Clojure" src="{{servlet-context}}/img/credits/clojure-icon.gif"/> Powered by <a href="http://clojure.org">Clojure</a> ||
           <img height="16" width="16" alt="GitHub" src="{{servlet-context}}/img/credits/github-logo-transparent.png"/>Find me/fork me on <a href="https://github.com/simon-brooke/geocsv">Github</a> ||
@@ -47,9 +57,10 @@
     {% style "/assets/material-icons/css/material-icons.min.css" %}
     {% style "/css/screen.css" %}
     {% style "/css/geocsv.css" %}
+    {% style "/css/spinner.css" %}
 
     <script type="text/javascript">
-        var csrfToken = "{{csrf-token}}";
+      var csrfToken = "{{csrf-token}}";
     </script>
     <!-- scripts and styles -->
     <!-- ATTENTION \/ -->

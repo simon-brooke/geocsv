@@ -22,6 +22,7 @@
         template
         (assoc params
           :page template
+          :version (System/getProperty "geocsv.version")
           :csrf-token *anti-forgery-token*)))
     "text/html; charset=utf-8"))
 

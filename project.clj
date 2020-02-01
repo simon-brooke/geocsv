@@ -1,7 +1,9 @@
-(defproject geocsv "0.1.1"
+(defproject geocsv "0.1.2"
 
   :description "A wee tool to show comma-separated value data on a map."
-  :url "http://example.com/FIXME"
+  :url "https://github.com/simon-brooke/geocsv"
+  :license {:name "GPL-2.0-or-later WITH Classpath-exception-2.0"
+            :url "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"}
 
   :dependencies [[adl-support "0.1.6"]
                  [ch.qos.logback/logback-classic "1.2.3"]
@@ -32,10 +34,10 @@
                  [org.clojure/clojurescript "1.10.597" :scope "provided"]
                  [org.clojure/tools.cli "0.4.2"]
                  [org.clojure/tools.logging "0.5.0"]
+                 [org.webjars/webjars-locator "0.38"]
                  [org.webjars.npm/bulma "0.8.0"]
                  [org.webjars.npm/leaflet "1.6.0"]
                  [org.webjars.npm/material-icons "0.3.1"]
-                 [org.webjars/webjars-locator "0.38"]
                  [re-frame "0.10.9"]
                  [reagent "0.9.0-rc3"]
                  [recalcitrant "0.1.2"]
