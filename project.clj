@@ -1,4 +1,4 @@
-(defproject geocsv "0.1.2"
+(defproject geocsv "0.1.2-SNAPSHOT"
 
   :description "A wee tool to show comma-separated value data on a map."
   :url "https://github.com/simon-brooke/geocsv"
@@ -38,7 +38,6 @@
                  [org.webjars.npm/bulma "0.8.0"]
                  [org.webjars.npm/leaflet "1.6.0"]
                  [org.webjars.npm/material-icons "0.3.1"]
-                 [org.webjars.npm/csvtojson "2.0.10"]
                  [re-frame "0.10.9"]
                  [reagent "0.9.0-rc3"]
                  [recalcitrant "0.1.2"]
