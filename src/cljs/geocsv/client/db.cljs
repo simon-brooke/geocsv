@@ -38,5 +38,5 @@
                            "Power-supplier"}  ;; need to be fetched from server side
    :latitude 56
    :longitude -4
-   :page :home
+   :page :about
    :zoom 1})

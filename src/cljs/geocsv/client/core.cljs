@@ -34,42 +34,38 @@
      [:div#nav-menu.navbar-menu
       {:class (when @expanded? :is-active)}
       [:div.navbar-start
-       [nav-link "#/" "Home" :home]
-       [nav-link "#/map" "Map" :map]
+       [nav-link "#/" "Map" :map]
        [nav-link "#/about" "About" :about]]]]))
 
 (defn about-page []
   [:section.section>div.container>div.content
-   [:img {:src "/img/warning_clojure.png"}]
-   (when-let [images @(rf/subscribe [:available-pin-images])]
-     [:div
-      [:h2 "The following pin images are available on this server"]
-      (apply
-        vector
-        (cons
-          :ol
-          (map
-            #(vector
-               :ol
-               [:img
-                {:src
-                 (str
-                   "img/map-pins/"
-                   (s/capitalize
-                   (s/replace
-                     (s/lower-case
-                       (str %))
-                     #"[^a-z0-9]" "-"))
-                   "-pin.png")
-                   :alt %}]
-               " "
-               %)
-            (sort images))))])])
-
-(defn home-page []
-  [:section.section>div.container>div.content
-   (when-let [docs @(rf/subscribe [:docs])]
-     [:div {:dangerouslySetInnerHTML {:__html (md->html docs)}}])])
+   [:div
+    (when-let [docs @(rf/subscribe [:docs])]
+      [:div {:dangerouslySetInnerHTML {:__html (md->html docs)}}])
+    (when-let [images @(rf/subscribe [:available-pin-images])]
+      [:div
+       [:h2 "The following pin images are available on this server"]
+       (apply
+         vector
+         (cons
+           :ol
+           (map
+             #(vector
+                :ol
+                [:img
+                 {:src
+                  (str
+                    "img/map-pins/"
+                    (s/capitalize
+                      (s/replace
+                        (s/lower-case
+                          (str %))
+                        #"[^a-z0-9]" "-"))
+                    "-pin.png")
+                  :alt %}]
+                " "
+                %)
+             (sort images))))])]])
 
 (defn map-page []
     "Return the content for the main map page. Map showing current location."
@@ -77,8 +73,7 @@
   (mv/panel))
 
 (def pages
-  {:home #'home-page
-   :map #'map-page
+  {:map #'map-page
    :about #'about-page})
 
 (defn page []
@@ -92,14 +87,12 @@
 
 (def router
   (reitit/router
-    [["/" {:name        :home
-           :view        #'home-page
-           :controllers [{:start (fn [_] (rf/dispatch [:init-home]))}]}]
-     ["/map" {:name        :map
+    [["/" {:name        :map
            :view        #'map-page
            :controllers [{:start (fn [_] (rf/dispatch [:init-map]))}]}]
      ["/about" {:name :about
-                :view #'about-page}]]))
+                :view #'about-page
+                :controllers [{:start (fn [_] (rf/dispatch [:init-about]))}]}]]))
 
 (defn start-router! []
   (rfe/start!
