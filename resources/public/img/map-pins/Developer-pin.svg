@@ -18,9 +18,9 @@
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
    sodipodi:docname="Developer-pin.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/simon/workspace/geocsv/resources/public/img/map-pins/basic_map_pin.png"
-   inkscape:export-xdpi="11.98"
-   inkscape:export-ydpi="11.98"
+   inkscape:export-filename="/home/simon/workspace/geocsv/resources/public/img/map-pins/Developer-pin.png"
+   inkscape:export-xdpi="95.965683"
+   inkscape:export-ydpi="95.965683"
    version="1.1">
   <defs
      id="defs4" />
@@ -35,7 +35,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.2"
-     inkscape:cx="-17.708798"
+     inkscape:cx="-36.012369"
      inkscape:cy="19.198946"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -63,7 +63,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
         <dc:date>20100801</dc:date>
         <dc:creator>
           <cc:Agent>
