@@ -26,3 +26,5 @@ resources/public/img/map-pins/colours/*.png
 resources/public/img/map-pins/flags/*.png
 
 .rebel_readline_history
+
+resources/public/img/map-pins/flags/
