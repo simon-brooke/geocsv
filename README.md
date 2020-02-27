@@ -4,6 +4,16 @@ A wee tool to show comma-separated value data on a map.
 
 [![Clojars Project](https://img.shields.io/clojars/v/geocsv.svg)](https://clojars.org/geocsv)
 
+## Other variants
+
+This is a little project I've played about with, and there are now three variants:
+
+1. [geocsv](https://github.com/simon-brooke/geocsv) is a fairly heavyweight web-app with both client-side and serverside components. It was the first version, and is the only version which meets the original requirement of being able to present data from [Google Sheets](https://www.google.co.uk/sheets/about/), but it's a remarkably heavyweight solution to what should be a simple problem.
+2. [geocsv-lite](https://github.com/simon-brooke/geocsv-lite) is a much lighter, client-side only reworking of the problem, in ClojureScript. I still wasn't satisfied that this was light enough.
+3. [geocsv-js](https://github.com/simon-brooke/geocsv-js) is a reworking in native JavaScript without any frameworks or heave libraries, except Leaflet. It is vastly lighter, and probably the one to use in most applications.
+
+## Overview
+
 The CSV file must have
 
 * column names in the first row;

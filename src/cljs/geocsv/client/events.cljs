@@ -51,6 +51,12 @@
     db))
 
 (rf/reg-event-db
+  :bad-docs
+  (fn [db [_ _]]
+    (js/console.log "Failed to fetch docs")
+    (assoc db :docs "**WARNING:** failed to fetch documentation from server.")))
+
+(rf/reg-event-db
   :common/set-error
   (fn [db [_ error]]
     (assoc db :common/error error)))
@@ -96,10 +102,11 @@
     {:http-xhrio {:method          :get
                   :uri             "/docs"
                   :response-format (ajax/raw-response-format)
-                  :on-success       [:set-docs]}}))
+                  :on-success       [:set-docs]
+                  :on-failure       [:bad-docs]}}))
 
 (rf/reg-event-fx
-  :init-home
+  :init-about
   (fn [_ _]
     {:dispatch [:fetch-docs]}))
 
@@ -152,7 +159,7 @@
   (fn
     [{db :db} [_ response]]
     (let [db' (assoc db :available-pin-images (set response))]
-    (js/console.log (str "processing pin images"))
+    (js/console.log "processing pin images")
     {:db (if
            (:view db')
            (refresh-map-pins db')
@@ -161,6 +168,7 @@
 (rf/reg-event-db
   :set-docs
   (fn [db [_ docs]]
+    (js/console.log "Successfully fetched docs")
     (assoc db :docs docs)))
 
 (rf/reg-event-db
