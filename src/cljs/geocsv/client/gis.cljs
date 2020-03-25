@@ -89,13 +89,13 @@
   (if
     (map? record) ;; which it should be!
     (str
-      "<h5>"
+      "<h5 class=\"record\">"
       (:name record)
       "</h5><dl>"
       (apply
         str
         (map
-          #(str "<dt>" (name %) "</dt><dd>" (record %) "</dd>")
+          #(str "<dt class=\"record\">" (name %) "</dt><dd class=\"record\">" (record %) "</dd>")
           (filter #(record %) (keys record))))
       "</dl>")))
 
@@ -107,13 +107,13 @@
   (if
     (map? record) ;; which it should be!
     (str
-      "<h5>"
+      "<h5 class=\"record\">"
       (:name record)
       "</h5><table>"
       (apply
         str
         (map
-          #(str "<tr><th>" (name %) "</th><td>" (record %) "</td></tr>")
+          #(str "<tr><th class=\"record\">" (name %) "</th><td class=\"record\">" (record %) "</td></tr>")
           (sort (filter #(record %) (keys record)))))
       "</table>")))
 

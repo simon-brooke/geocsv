@@ -46,3 +46,16 @@ footer a {
 footer div {
   padding: 0.1em;
 }
+
+h5.record {
+  font-weight: bold;
+  font-size: largerl
+}
+
+th.record {
+  font-weight: normal;
+}
+
+td.record {
+  font-weight: bold;
+}
